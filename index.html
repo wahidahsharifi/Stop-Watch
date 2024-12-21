@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>Stop Watch</title>
+      <link rel="shortcut icon" href="img/icon.svg" type="image/x-icon" />
+      <link
+         rel="stylesheet"
+         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+      <link rel="stylesheet" href="style.css" />
+   </head>
+   <body>
+      <h1>
+         <span id="time">00:00:00</span>
+         <span class="milliseconds" id="milliseconds">.00</span>
+      </h1>
+      <div>
+         <button id="start">
+            <span
+               class="material-symbols-outlined"
+               id="play"
+               style="display: block"
+               >play_arrow</span
+            >
+            <span
+               class="material-symbols-outlined"
+               id="pause"
+               style="display: none"
+               >pause</span
+            >
+         </button>
+         <button id="reset">
+            <span class="material-symbols-outlined">restart_alt</span>
+         </button>
+         <button id="flag">
+            <span class="material-symbols-outlined">flag_2</span>
+         </button>
+      </div>
+      <table>
+         <thead>
+            <tr>
+               <th>laps</th>
+               <th>Time</th>
+               <th>Total</th>
+            </tr>
+         </thead>
+         <tbody></tbody>
+      </table>
+      <script src="main.js"></script>
+   </body>
+</html>
