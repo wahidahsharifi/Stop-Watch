@@ -9,9 +9,6 @@ body {
    align-items: center;
    margin: 0;
 }
-#flag {
-   opacity: 0.3;
-}
 div {
    display: flex;
    gap: 20px;
@@ -74,5 +71,8 @@ tbody tr {
    }
    table {
       font-size: 20px;
+   }
+   div {
+      margin-top: 25px;
    }
 }
