@@ -6,8 +6,7 @@ const countdownTimer = {
    time: 0,
    intervalId: null,
    startState: false,
-   lastSecond: null,
-   lastTimestamp: null,
+   startTime: null,
    timeOutput: document.getElementById("time"),
    millisecondsOutput: document.getElementById("milliseconds"),
    num: 1,
@@ -17,7 +16,7 @@ const countdownTimer = {
       localStorage.setItem("stopwatch", JSON.stringify({
          time: this.time,
          startState: this.startState,
-         lastTimestamp: this.startState ? Date.now() : null,
+         startTime: this.startState ? this.startTime : null,
          laps: document.querySelector("tbody").innerHTML,
          num: this.num,
          pastLap: this.pastLap,
@@ -32,11 +31,11 @@ const countdownTimer = {
          this.num = savedState.num;
          this.pastLap = savedState.pastLap;
          document.querySelector("tbody").innerHTML = savedState.laps || "";
-         this.lastTimestamp = savedState.lastTimestamp;
+         this.startTime = savedState.startTime;
 
-         if (this.startState && this.lastTimestamp) {
-            const elapsed = Date.now() - this.lastTimestamp;
-            this.time += elapsed;
+         if (this.startState && this.startTime) {
+            const elapsed = Date.now() - this.startTime;
+            this.time = elapsed; // Calculate the current elapsed time
          }
 
          this.updateDisplay();
@@ -59,18 +58,20 @@ const countdownTimer = {
          flag.style.opacity = "1";
          play.style.display = "none";
          pause.style.display = "block";
-         this.lastTimestamp = Date.now();
-         this.intervalId = setInterval(() => {
-            const now = Date.now();
-            this.time += now - this.lastTimestamp;
-            this.lastTimestamp = now;
-            this.updateDisplay();
-            this.saveState();
-         }, 10);
+         this.startTime = Date.now() - this.time; // Set start time relative to elapsed time
+         this.startInterval();
+         this.saveState();
       }
    },
 
-   reset: function (m = false) {
+   startInterval: function () {
+      this.intervalId = setInterval(() => {
+         this.time = Date.now() - this.startTime;
+         this.updateDisplay();
+      }, 10);
+   },
+
+   reset: function () {
       this.time = 0;
       this.startState = false;
       flag.style.opacity = "0.3";
@@ -80,7 +81,7 @@ const countdownTimer = {
       this.intervalId = null;
       this.num = 1;
       this.pastLap = 0;
-      this.lastTimestamp = null;
+      this.startTime = null;
       document.querySelector("tbody").innerHTML = "";
       this.updateDisplay();
       this.saveState();
@@ -94,7 +95,6 @@ const countdownTimer = {
          flag.style.opacity = "0.3";
          clearInterval(this.intervalId);
          this.intervalId = null;
-         this.lastTimestamp = null;
          this.saveState();
       }
    },
@@ -116,7 +116,6 @@ const countdownTimer = {
             .toString()
             .padStart(2, "0")}:${secs.toString().padStart(2, "0")}`,
          milliseconds: millis.toString().padStart(2, "0"),
-         seconds: secs,
       };
    },
 
@@ -168,14 +167,6 @@ window.addEventListener("load", () => {
 
    // Ensure display updates actively after reload if timer was running
    if (countdownTimer.startState && countdownTimer.intervalId === null) {
-      countdownTimer.lastTimestamp = Date.now(); // Set lastTimestamp for correct time calculation
-      countdownTimer.intervalId = setInterval(() => {
-         const now = Date.now();
-         countdownTimer.time += now - countdownTimer.lastTimestamp;
-         countdownTimer.lastTimestamp = now;
-         countdownTimer.updateDisplay();
-         countdownTimer.saveState();
-      }, 10);
+      countdownTimer.startInterval();
    }
 });
-
